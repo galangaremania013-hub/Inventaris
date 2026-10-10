@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Informasi Inventaris IT</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap">
+          <img class="brand-mark" src="logo.svg" alt="Logo Inventaris IT" />
+          <div>
+            <h1>Inventaris IT</h1>
+            <p>QR + Helpdesk</p>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <button class="nav-item active" data-target="dashboard">
+            <span>◫</span>
+            Dashboard
+          </button>
+          <button class="nav-item" data-target="inventory">
+            <span>▣</span>
+            Inventaris
+          </button>
+          <button class="nav-item" data-target="helpdesk">
+            <span>✦</span>
+            Helpdesk
+          </button>
+          <button class="nav-item" data-target="scanner">
+            <span>◌</span>
+            QR Scanner
+          </button>
+        </nav>
+
+        <div class="sidebar-card">
+          <p class="card-label">Status sistem</p>
+          <div class="status-row">
+            <span class="dot online"></span>
+            Server aktif
+          </div>
+          <div class="status-row">
+            <span class="dot warning"></span>
+            5 item perlu pengecekan
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div class="topbar-title-wrap">
+            <div class="mobile-brand">
+              <img src="logo.svg" alt="Logo Inventaris IT" />
+              <span>Inventaris IT</span>
+            </div>
+            <div>
+              <p class="eyebrow">Sistem operasional</p>
+              <h2>Monitoring IT & Layanan</h2>
+            </div>
+          </div>
+          <button class="primary-btn" id="openAssetModal">+ Tambah Barang</button>
+        </header>
+
+        <section class="view active" id="dashboard">
+          <div class="summary-grid">
+            <article class="summary-card accent-blue">
+              <div class="summary-top">
+                <span>Total Asset</span>
+                <span class="badge neutral">Live</span>
+              </div>
+              <strong id="totalAssets">0</strong>
+              <small>Seluruh perangkat & aset operasional</small>
+            </article>
+
+            <article class="summary-card accent-green">
+              <div class="summary-top">
+                <span>Siap Pakai</span>
+                <span class="badge success">Ready</span>
+              </div>
+              <strong id="readyAssets">0</strong>
+              <small>Perangkat yang bisa digunakan</small>
+            </article>
+
+            <article class="summary-card accent-yellow">
+              <div class="summary-top">
+                <span>Ticket Aktif</span>
+                <span class="badge warning">Open</span>
+              </div>
+              <strong id="activeTickets">0</strong>
+              <small>Permasalahan yang sedang ditangani</small>
+            </article>
+
+            <article class="summary-card accent-purple">
+              <div class="summary-top">
+                <span>Perlu Perawatan</span>
+                <span class="badge purple">Check</span>
+              </div>
+              <strong id="maintenanceCount">0</strong>
+              <small>Barang yang butuh inspeksi rutin</small>
+            </article>
+          </div>
+
+          <div class="content-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Asset terbaru</h3>
+                <button class="link-btn" data-target="inventory">Lihat semua</button>
+              </div>
+              <div id="recentAssets" class="list-stack"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Ticket terbaru</h3>
+                <button class="link-btn" data-target="helpdesk">Lihat semua</button>
+              </div>
+              <div id="recentTickets" class="list-stack"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="inventory">
+          <div class="panel-toolbar">
+            <div class="search-box">
+              <span>⌕</span>
+              <input id="inventorySearch" type="search" placeholder="Cari barang, kode QR, lokasi..." />
+            </div>
+            <button class="primary-btn" id="openTicketModal">+ Buat Tiket</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Daftar Inventaris</h3>
+              <span class="muted" id="inventoryCount">0 barang</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Kode</th>
+                    <th>Barang</th>
+                    <th>Lokasi</th>
+                    <th>Status</th>
+                    <th>Penanggung Jawab</th>
+                    <th>QR</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" id="helpdesk">
+          <div class="panel-toolbar">
+            <div class="filter-group">
+              <button class="chip active" data-ticket-filter="all">Semua</button>
+              <button class="chip" data-ticket-filter="open">Open</button>
+              <button class="chip" data-ticket-filter="in_progress">Progress</button>
+              <button class="chip" data-ticket-filter="resolved">Resolved</button>
+            </div>
+            <button class="primary-btn" id="newTicketBtn">+ Ticket Baru</button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Helpdesk & Layanan</h3>
+              <span class="muted" id="ticketCount">0 tiket</span>
+            </div>
+            <div id="ticketList" class="ticket-list"></div>
+          </section>
+        </section>
+
+        <section class="view" id="scanner">
+          <div class="scanner-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Scan QR Asset</h3>
+              </div>
+              <div class="scanner-box">
+                <label for="qrCodeInput">Masukkan kode QR / Kode asset</label>
+                <div class="input-row">
+                  <input id="qrCodeInput" type="text" placeholder="Contoh: IT-001" />
+                  <button class="primary-btn" id="scanQrBtn">Cek</button>
+                </div>
+              </div>
+              <div class="qr-output">
+                <canvas id="qrCanvas" width="220" height="220"></canvas>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Detail Asset</h3>
+              </div>
+              <div id="assetScanResult" class="asset-detail empty">
+                <p>Belum ada data asset yang dipindai.</p>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal hidden" id="assetModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Tambah Asset Baru</h3>
+          <button class="close-btn" data-close="assetModal">✕</button>
+        </div>
+        <form id="assetForm">
+          <div class="form-grid">
+            <label>
+              Nama Barang
+              <input name="name" type="text" required />
+            </label>
+            <label>
+              Kode Asset
+              <input name="code" type="text" required placeholder="IT-xxx" />
+            </label>
+            <label>
+              Kategori
+              <select name="category">
+                <option>Laptop</option>
+                <option>Printer</option>
+                <option>Router</option>
+                <option>Monitor</option>
+                <option>UPS</option>
+                <option>Server</option>
+                <option>Perangkat Tambahan</option>
+              </select>
+            </label>
+            <label>
+              Lokasi
+              <input name="location" type="text" required placeholder="Laboratorium, Ruang IT, ..." />
+            </label>
+            <label>
+              Status
+              <select name="status">
+                <option>Ready</option>
+                <option>In Use</option>
+                <option>Maintenance</option>
+                <option>Broken</option>
+              </select>
+            </label>
+            <label>
+              PIC / User
+              <input name="assignedTo" type="text" required />
+            </label>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="secondary-btn" data-close="assetModal">Batal</button>
+            <button type="submit" class="primary-btn">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal hidden" id="ticketModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Buat Tiket Helpdesk</h3>
+          <button class="close-btn" data-close="ticketModal">✕</button>
+        </div>
+        <form id="ticketForm">
+          <div class="form-grid">
+            <label>
+              Judul
+              <input name="title" type="text" required />
+            </label>
+            <label>
+              Kode Asset
+              <input name="assetCode" type="text" placeholder="IT-001" />
+            </label>
+            <label>
+              Prioritas
+              <select name="priority">
+                <option>Low</option>
+                <option selected>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+              </select>
+            </label>
+            <label>
+              Status
+              <select name="status">
+                <option selected>Open</option>
+                <option>In Progress</option>
+                <option>Resolved</option>
+                <option>Closed</option>
+              </select>
+            </label>
+            <label class="full-span">
+              Deskripsi
+              <textarea name="description" rows="4" required></textarea>
+            </label>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="secondary-btn" data-close="ticketModal">Batal</button>
+            <button type="submit" class="primary-btn">Kirim Ticket</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
